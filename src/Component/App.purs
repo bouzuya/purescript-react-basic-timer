@@ -14,7 +14,7 @@ import Effect (Effect)
 import Effect.Now (nowDateTime)
 import Effect.Timer (setTimeout)
 import Math as Math
-import React.Basic (Component, JSX, Self, StateUpdate(..), capture, createComponent, make, send)
+import React.Basic (Component, JSX, Self, StateUpdate(..), capture, capture_, createComponent, make, send)
 import React.Basic.DOM as H
 import React.Basic.DOM.Events (targetValue)
 
@@ -28,7 +28,8 @@ type State =
   }
 
 data Action
-  = Start
+  = Reset
+  | Start
   | Tick DateTime
   | UpdateDuration String
   | UpdateStartedAt DateTime
@@ -94,7 +95,10 @@ render self =
           }
         , H.div
           { children:
-            [ H.button_ [ H.text "Reset"]
+            [ H.button
+              { onClick: capture_ self Reset
+              , children: [ H.text "Reset"]
+              }
             ]
           }
         ]
@@ -105,6 +109,12 @@ render self =
   }
 
 update :: Self Props State Action -> Action -> StateUpdate Props State Action
+update self Reset = do
+  UpdateAndSideEffects
+    (self.state { value = 0.0 })
+    (\self' -> do
+      dt <- nowDateTime
+      send self (UpdateStartedAt dt))
 update self Start = do
   SideEffects
     (\self' -> do
