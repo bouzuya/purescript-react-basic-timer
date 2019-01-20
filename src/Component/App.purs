@@ -40,6 +40,9 @@ component = createComponent "App"
 app :: JSX
 app = make component { didMount, initialState, render, update } {}
 
+format :: Number -> String
+format n = show (Math.floor (Math.round (n * 10.0)) / 10.0)
+
 didMount :: Self Props State Action -> Effect Unit
 didMount self = send self Start
 
@@ -68,12 +71,15 @@ render self =
         [ H.div
           { children:
             [ H.span_ [ H.text "Elapsed Time"]
-            , H.progress { max: 100.0, value: "0" }
+            , H.progress
+              { max: unwrap self.state.duration
+              , value: (format self.state.value)
+              }
             ]
           }
         , H.div
           { children:
-            [ H.text (show (fromMaybe 0 (Int.fromNumber (Math.round self.state.value))))
+            [ H.text (format self.state.value)
             , H.text "s"
             ]
           }
@@ -131,7 +137,7 @@ update self (Tick dt) =
             self.state.startedAt
       })
     (\self' ->
-      void (setTimeout 1000 (nowDateTime >>= \dt' -> (send self' (Tick dt')))))
+      void (setTimeout 100 (nowDateTime >>= \dt' -> (send self' (Tick dt')))))
 update self (UpdateDuration s) =
   case Int.fromString s of
     Nothing -> NoUpdate
