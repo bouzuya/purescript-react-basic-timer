@@ -2,17 +2,22 @@ module Component.App
   ( app
   ) where
 
-import React.Basic (Component, JSX, Self, StateUpdate(..), createComponent, make)
+import Prelude
+
+import Data.Int as Int
+import Data.Maybe (Maybe(..), fromMaybe)
+import React.Basic (Component, JSX, Self, StateUpdate(..), capture, createComponent, make)
 import React.Basic.DOM as H
+import React.Basic.DOM.Events (targetValue)
 
 type Props =
   {}
 
 type State =
-  {}
+  { duration :: Int }
 
 data Action
-  = Noop
+  = UpdateDuration String
 
 component :: Component Props
 component = createComponent "App"
@@ -22,7 +27,7 @@ app = make component { initialState, render, update } {}
 
 initialState :: State
 initialState =
-  {}
+  { duration: 30 }
 
 render :: Self Props State Action -> JSX
 render self =
@@ -54,7 +59,17 @@ render self =
         , H.div
           { children:
             [ H.span_ [ H.text "Duration" ]
-            , H.input { min: 0.0, max: 3600.0, type: "range", value: "30" }
+            , H.input
+              { min: 0.0
+              , max: 3600.0
+              , onChange:
+                  capture
+                    self
+                    targetValue
+                    (\v -> UpdateDuration (fromMaybe "" v))
+              , type: "range"
+              , value: show self.state.duration
+              }
             ]
           }
         , H.div
@@ -70,4 +85,7 @@ render self =
   }
 
 update :: Self Props State Action -> Action -> StateUpdate Props State Action
-update self Noop = NoUpdate
+update self (UpdateDuration s) =
+  case Int.fromString s of
+    Nothing -> NoUpdate
+    Just n -> Update self.state { duration = n }
