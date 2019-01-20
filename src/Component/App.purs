@@ -4,9 +4,17 @@ module Component.App
 
 import Prelude
 
+import Data.DateTime (DateTime)
+import Data.DateTime as DateTime
 import Data.Int as Int
-import Data.Maybe (Maybe(..), fromMaybe)
-import React.Basic (Component, JSX, Self, StateUpdate(..), capture, createComponent, make)
+import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Newtype (unwrap, wrap)
+import Data.Time.Duration (Seconds)
+import Effect (Effect)
+import Effect.Now (nowDateTime)
+import Effect.Timer (setTimeout)
+import Math as Math
+import React.Basic (Component, JSX, Self, StateUpdate(..), capture, createComponent, make, send)
 import React.Basic.DOM as H
 import React.Basic.DOM.Events (targetValue)
 
@@ -14,20 +22,32 @@ type Props =
   {}
 
 type State =
-  { duration :: Int }
+  { duration :: Seconds
+  , startedAt :: Maybe DateTime
+  , value :: Number
+  }
 
 data Action
-  = UpdateDuration String
+  = Start
+  | Tick DateTime
+  | UpdateDuration String
+  | UpdateStartedAt DateTime
 
 component :: Component Props
 component = createComponent "App"
 
 app :: JSX
-app = make component { initialState, render, update } {}
+app = make component { didMount, initialState, render, update } {}
+
+didMount :: Self Props State Action -> Effect Unit
+didMount self = send self Start
 
 initialState :: State
 initialState =
-  { duration: 30 }
+  { duration: wrap 30.0
+  , startedAt: Nothing
+  , value: 0.0
+  }
 
 render :: Self Props State Action -> JSX
 render self =
@@ -52,7 +72,7 @@ render self =
           }
         , H.div
           { children:
-            [ H.text "0"
+            [ H.text (show (fromMaybe 0 (Int.fromNumber (Math.round self.state.value))))
             , H.text "s"
             ]
           }
@@ -85,7 +105,26 @@ render self =
   }
 
 update :: Self Props State Action -> Action -> StateUpdate Props State Action
+update self Start = do
+  SideEffects
+    (\self' -> do
+      dt <- nowDateTime
+      send self (UpdateStartedAt dt)
+      send self (Tick dt))
+update self (Tick dt) =
+  UpdateAndSideEffects
+    (self.state
+      { value =
+          maybe
+            0.0
+            (\at -> unwrap ((DateTime.diff dt at) :: Seconds))
+            self.state.startedAt
+      })
+    (\self' ->
+      void (setTimeout 1000 (nowDateTime >>= \dt' -> (send self' (Tick dt')))))
 update self (UpdateDuration s) =
   case Int.fromString s of
     Nothing -> NoUpdate
-    Just n -> Update self.state { duration = n }
+    Just n -> Update self.state { duration = wrap (Int.toNumber n) }
+update self (UpdateStartedAt dt) =
+  Update self.state { startedAt = Just dt }
