@@ -37,7 +37,33 @@ render self =
         ]
       }
     , H.div
-      { className: "body" }
+      { className: "body"
+      , children:
+        [ H.div
+          { children:
+            [ H.span_ [ H.text "Elapsed Time"]
+            , H.progress { max: 100.0, value: "0" }
+            ]
+          }
+        , H.div
+          { children:
+            [ H.text "0"
+            , H.text "s"
+            ]
+          }
+        , H.div
+          { children:
+            [ H.span_ [ H.text "Duration" ]
+            , H.input { min: 0.0, max: 3600.0, type: "range", value: "30" }
+            ]
+          }
+        , H.div
+          { children:
+            [ H.button_ [ H.text "Reset"]
+            ]
+          }
+        ]
+      }
     , H.div
       { className: "footer" }
     ]
