@@ -4,6 +4,7 @@ module Component.App
 
 import Prelude
 
+import AppStyle as Style
 import Data.DateTime (DateTime)
 import Data.DateTime as DateTime
 import Data.Int as Int
@@ -14,6 +15,7 @@ import Effect (Effect)
 import Effect.Now (nowDateTime)
 import Effect.Timer (setTimeout)
 import Math as Math
+import PureStyle (getStyle)
 import React.Basic (Component, JSX, Self, StateUpdate(..), capture, capture_, createComponent, make, send)
 import React.Basic.DOM as H
 import React.Basic.DOM.Events (targetValue)
@@ -58,7 +60,9 @@ render self =
   H.div
   { className: "app"
   , children:
-    [ H.div
+    [ H.style_
+      [ H.text (getStyle Style.sheet) ]
+    , H.div
       { className: "header"
       , children:
         [ H.h1_
@@ -66,7 +70,7 @@ render self =
         ]
       }
     , H.div
-      { className: "body"
+      { className: "body" <> " " <> Style.form
       , children:
         [ H.div
           { children:
@@ -104,6 +108,7 @@ render self =
             [ H.button
               { onClick: capture_ self Reset
               , children: [ H.text "Reset"]
+              , className: Style.button
               }
             ]
           }
