@@ -1,6 +1,5 @@
-module AppStyle
-  ( button
-  , form
+module Component.AppStyle
+  ( section
   , sheet
   ) where
 
@@ -9,20 +8,17 @@ import PureStyle (StyleSheet, createStyleSheet, registerStyle)
 sheet :: StyleSheet
 sheet = createStyleSheet
 
-form :: String
-form = registerStyle sheet """
-  .& {
-    margin: 0 auto;
-    width: 400px;
+global :: String
+global = registerStyle sheet """
+  html, body {
+    padding: 0;
   }
 """
 
-button :: String
-button = registerStyle sheet """
+section :: String
+section = registerStyle sheet """
   .& {
-    background-color: transparent;
-    border: none;
-    height: 24px;
-    width: 100%;
+    margin: 0 auto;
+    width: 400px;
   }
 """
