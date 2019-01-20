@@ -89,7 +89,7 @@ render self =
                     targetValue
                     (\v -> UpdateDuration (fromMaybe "" v))
               , type: "range"
-              , value: show self.state.duration
+              , value: show (unwrap self.state.duration)
               }
             ]
           }
