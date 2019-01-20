@@ -119,6 +119,17 @@ let bouzuya =
 
 let overrides = {=}
 
-let additions = {=} ⫽ bouzuya
+let additions = {=} ⫽ bouzuya ⫽ {
+      pure-style =
+        mkPackage
+        [ "foldable-traversable"
+        , "foreign-object"
+        , "prelude"
+        , "refs"
+        , "strings"
+        ]
+        "https://github.com/oreshinya/purescript-pure-style.git"
+        "v4.0.1"
+      }
 
 in  upstream ⫽ overrides ⫽ additions

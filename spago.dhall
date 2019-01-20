@@ -7,6 +7,7 @@ You can edit this file as you like.
 , dependencies =
     [ "prelude"
     , "psci-support"
+    , "pure-style"
     , "react-basic"
     , "test-unit"
     ]
