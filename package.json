@@ -1,7 +1,7 @@
 {
   "name": "purescript-react-basic-timer",
   "description": "[mockmock.dev #200](https://mockmock.connpass.com/event/116250/) w010 application.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": {
     "url": "https://bouzuya.net/",
     "name": "bouzuya",
