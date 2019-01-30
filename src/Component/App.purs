@@ -38,8 +38,10 @@ render self =
     , H.div
       { className: "header"
       , children:
-        [ H.h1_
-          [ H.text "Timer" ]
+        [ H.h1
+          { className: Style.title
+          , children: [ H.text "Timer" ]
+          }
         ]
       }
     , H.div
