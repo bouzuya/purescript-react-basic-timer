@@ -69,9 +69,13 @@ render self =
       , children:
         [ H.div
           { children:
-            [ H.span_ [ H.text "Elapsed Time"]
+            [ H.span
+              { className: Style.label
+              , children: [ H.text "Elapsed Time"]
+              }
             , H.progress
-              { max: unwrap self.state.duration
+              { className: Style.value
+              , max: unwrap self.state.duration
               , value: (format self.state.value)
               }
             ]
@@ -84,9 +88,13 @@ render self =
           }
         , H.div
           { children:
-            [ H.span_ [ H.text "Duration" ]
+            [ H.span
+              { className: Style.label
+              , children: [ H.text "Duration" ]
+              }
             , H.input
-              { min: 0.0
+              { className: Style.value
+              , min: 0.0
               , max: 3600.0
               , onChange:
                   capture
